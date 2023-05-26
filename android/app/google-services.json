@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "987182833613",
+    "project_id": "noteworks-flutter-project",
+    "storage_bucket": "noteworks-flutter-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987182833613:android:a97d69fc8f60c00378ee84",
+        "android_client_info": {
+          "package_name": "net.lupuscode.noteworks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987182833613-rgldvoc9ch3kr8bd6gnhtkqukb0tv2rb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8zmw0m464GiKzGVbIDMS9CXKMiDn_ZXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987182833613-rgldvoc9ch3kr8bd6gnhtkqukb0tv2rb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
