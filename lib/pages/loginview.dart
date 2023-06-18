@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/firebase_options.dart';
+import 'package:noteworks/google_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -83,6 +84,13 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: const Text('Log In'),
                   ),
+                  const Text('Or continue with Google:'),
+                  IconButton(
+                    onPressed: () async {
+                      await Gauth().signInWithGoogle();
+                    },
+                    icon: Image.asset('assets/images/google.png'),
+                  )
                 ],
               );
             default:
