@@ -27,6 +27,11 @@ void main() {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  Future<User> _reloadUser(user) async {
+    await user?.reload();
+    return FirebaseAuth.instance.currentUser!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -36,13 +41,15 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
+            var user = FirebaseAuth.instance.currentUser;
             if (user != null) {
-              if (user.emailVerified) {
-                print('Mail is verified');
-              } else {
-                return const VerifyEmailPage();
-              }
+              _reloadUser(user).then((ruser) {
+                if (ruser.emailVerified) {
+                  print('Mail is verified');
+                } else {
+                  return const VerifyEmailPage();
+                }
+              });
             } else {
               return const LoginPage();
             }
