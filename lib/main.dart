@@ -25,10 +25,10 @@ void main() {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key); // Update this line
 
-  Future<User> _reloadUser(user) async {
-    await user?.reload();
+  Future<User> _reloadUser(User user) async {
+    await user.reload();
     return FirebaseAuth.instance.currentUser!;
   }
 
@@ -39,24 +39,30 @@ class HomePage extends StatelessWidget {
         options: DefaultFirebaseOptions.currentPlatform,
       ),
       builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            var user = FirebaseAuth.instance.currentUser;
-            if (user != null) {
-              _reloadUser(user).then((ruser) {
-                if (ruser.emailVerified) {
-                  print('Mail is verified');
-                } else {
-                  return const VerifyEmailPage();
+        if (snapshot.connectionState == ConnectionState.done) {
+          final User? initialUser = FirebaseAuth.instance.currentUser;
+
+          if (initialUser != null) {
+            return FutureBuilder(
+              future: _reloadUser(initialUser),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final User user = snapshot.data as User;
+                  if (user.emailVerified) {
+                    print('Mail is verified');
+                    return const Text('Done');
+                  } else {
+                    return const VerifyEmailPage();
+                  }
                 }
-              });
-            } else {
-              return const LoginPage();
-            }
-            return const Text('Done');
-          default:
-            return const CircularProgressIndicator();
+                return const CircularProgressIndicator();
+              },
+            );
+          } else {
+            return const LoginPage();
+          }
         }
+        return const CircularProgressIndicator();
       },
     );
   }
