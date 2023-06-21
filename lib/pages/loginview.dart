@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/google_auth.dart';
 import 'package:noteworks/pages/registerview.dart';
+import 'package:noteworks/passreset.dart';
 
+// LoginPage is a StatefulWidget to manage user login functionality
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -10,12 +12,16 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+// _LoginPageState manages the state of the LoginPage widget
 class _LoginPageState extends State<LoginPage> {
+  // Declare TextEditingController instances for email and password fields
   late final TextEditingController _email;
   late final TextEditingController _pass;
-  // late means that even though it doesnt have any value it will
-  // be assigned before its usage.
 
+  // Instantiate a PasswordReset object to reset the user's password
+  final PasswordReset _passwordReset = PasswordReset();
+
+  // Initialize the TextEditingController instances
   @override
   void initState() {
     _email = TextEditingController();
@@ -23,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  // Dispose of the TextEditingController instances to free resources
   @override
   void dispose() {
     _email.dispose();
@@ -30,6 +37,61 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // Function to handle the password reset process
+  void _forgotPassword() async {
+    final email = _email.text.trim();
+    try {
+      await _passwordReset.sendPasswordResetEmail(email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password reset email sent')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error sending password reset email')),
+      );
+    }
+  }
+
+  // Function to show a dialog for recovering the password
+  Future<void> _showRecoverPasswordDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Recover Password'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _email,
+                  decoration:
+                      const InputDecoration(labelText: 'Enter your used email'),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Recover'),
+              onPressed: () {
+                _forgotPassword();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Build the LoginPage widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +142,10 @@ class _LoginPageState extends State<LoginPage> {
                   .pushNamedAndRemoveUntil('/register/', (route) => false);
             },
             child: const Text('Register Here!'),
+          ),
+          TextButton(
+            onPressed: _showRecoverPasswordDialog,
+            child: Text('Forgot Password?'),
           ),
           const Text('Or continue with Google:'),
           IconButton(

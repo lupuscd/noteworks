@@ -2,21 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Gauth {
-  // Google sign in
+  // Method to sign in with Google
   signInWithGoogle() async {
-    //Begin signing
+    // Begin the Google sign in process
     final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
 
-    //Get details
+    // Obtain authentication details from the GoogleSignInAccount
     final GoogleSignInAuthentication gAuth = await gUser!.authentication;
 
-    //Create new credential
+    // Create a new credential using the authentication details
     final credential = GoogleAuthProvider.credential(
       accessToken: gAuth.accessToken,
       idToken: gAuth.idToken,
     );
 
-    //Sign In
+    // Sign in to FirebaseAuth using the Google credential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

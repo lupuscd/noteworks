@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/google_auth.dart';
 
+// RegisterPage is a StatefulWidget to manage user registration functionality
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -9,12 +10,13 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
+// _RegisterPageState manages the state of the RegisterPage widget
 class _RegisterPageState extends State<RegisterPage> {
+  // Declare TextEditingController instances for email and password fields
   late final TextEditingController _email;
   late final TextEditingController _pass;
-  // late means that even though it doesnt have any value it will
-  // be assigned before its usage.
 
+  // Initialize the TextEditingController instances
   @override
   void initState() {
     _email = TextEditingController();
@@ -22,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.initState();
   }
 
+  // Dispose of the TextEditingController instances to free resources
   @override
   void dispose() {
     _email.dispose();
@@ -29,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  // Build the RegisterPage widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
