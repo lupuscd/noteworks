@@ -71,19 +71,19 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
-              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: const Text('Cancel'),
             ),
             TextButton(
-              child: const Text('Recover'),
               onPressed: () {
                 _forgotPassword();
                 Navigator.of(context).pop();
               },
+              child: const Text('Recover'),
             ),
           ],
         );
