@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:noteworks/constants/routes.dart';
 import 'package:noteworks/firebase_options.dart';
 import 'package:noteworks/pages/loginview.dart';
 import 'package:noteworks/pages/registerview.dart';
@@ -17,8 +18,9 @@ void main() {
       ),
       home: const HomePage(),
       routes: {
-        '/login/': (context) => const LoginPage(),
-        '/register/': (context) => const RegisterPage(),
+        loginRoute: (context) => const LoginPage(),
+        registerRoute: (context) => const RegisterPage(),
+        notesRoute: (context) => const NoteWorks(),
       },
     ),
   );
@@ -52,15 +54,15 @@ class HomePage extends StatelessWidget {
             return FutureBuilder(
               future: _reloadUser(initialUser),
               builder: (context, snapshot) {
-                // // Check if there's an error
-                // if (snapshot.hasError) {
-                //   print('${snapshot.error}');
-                //   return Center(
-                //     child:
-                //         Text('Error initializing Firebase: ${snapshot.error}'),
-                //   );
-                // }
-                // Once the user data has been reloaded
+                // Check if there's an error
+                if (snapshot.hasError) {
+                  print('${snapshot.error}');
+                  return Center(
+                    child:
+                        Text('Error initializing Firebase: ${snapshot.error}'),
+                  );
+                }
+                //Once the user data has been reloaded
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Check if snapshot.data is not null
                   if (snapshot.data != null) {
@@ -116,7 +118,7 @@ class _NoteWorksState extends State<NoteWorks> {
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/login/',
+                      loginRoute,
                       (_) => false,
                     );
                   }

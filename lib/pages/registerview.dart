@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:noteworks/constants/routes.dart';
 import 'package:noteworks/google_auth.dart';
 
 // RegisterPage is a StatefulWidget to manage user registration functionality
@@ -84,8 +85,10 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/login/', (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                loginRoute,
+                (route) => false,
+              );
             },
             child: const Text('Already registered? Log In!'),
           ),

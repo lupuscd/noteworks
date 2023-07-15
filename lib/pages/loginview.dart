@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:noteworks/constants/routes.dart';
 import 'package:noteworks/google_auth.dart';
 import 'package:noteworks/pages/registerview.dart';
 import 'package:noteworks/passreset.dart';
@@ -126,6 +127,10 @@ class _LoginPageState extends State<LoginPage> {
                   email: email,
                   password: pass,
                 );
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  notesRoute,
+                  (route) => false,
+                );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   print('User not found!');
@@ -138,8 +143,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/register/', (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                (route) => false,
+              );
             },
             child: const Text('Register Here!'),
           ),
