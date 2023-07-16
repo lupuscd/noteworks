@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
-import 'package:noteworks/google_auth.dart';
+import 'package:noteworks/utilities/errordialog.dart';
+import 'package:noteworks/utilities/google_auth.dart';
 
 // RegisterPage is a StatefulWidget to manage user registration functionality
 class RegisterPage extends StatefulWidget {
@@ -72,13 +73,18 @@ class _RegisterPageState extends State<RegisterPage> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  print(
-                      'The password provided is too weak! Use 6 characters or more.');
+                  await showErrorDialog(context, 'Weak password');
                 } else if (e.code == 'email-already-in-use') {
-                  print('An account already exists for that email!');
+                  await showErrorDialog(
+                      context, 'Account with this email already exists');
                 } else if (e.code == 'invalid-email') {
-                  print('Use a valid email!');
+                  await showErrorDialog(context, 'Invalid email entered');
+                } else {
+                  await showErrorDialog(context, 'Error: ${e.code}!');
                 }
+              } catch (e) {
+                await showErrorDialog(
+                    context, 'An unexpected error occurred: $e');
               }
             },
             child: const Text('Register'),
@@ -95,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
           const Text('Or continue with Google:'),
           IconButton(
             onPressed: () async {
-              await Gauth().signInWithGoogle();
+              await Gauth().signInWithGoogle(context);
             },
             icon: Image.asset('assets/images/google.png'),
           )

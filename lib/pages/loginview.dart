@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
-import 'package:noteworks/forgotpassbutton.dart';
-import 'package:noteworks/google_auth.dart';
+import 'package:noteworks/utilities/errordialog.dart';
+import 'package:noteworks/utilities/forgotpassbutton.dart';
+import 'package:noteworks/utilities/google_auth.dart';
 
 // LoginPage is a StatefulWidget to manage user login functionality
 class LoginPage extends StatefulWidget {
@@ -80,10 +81,15 @@ class _LoginPageState extends State<LoginPage> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  print('User not found!');
+                  await showErrorDialog(context, 'User not found!');
                 } else if (e.code == 'wrong-password') {
-                  print('Wrong password!');
+                  await showErrorDialog(context, 'Wrong password!');
+                } else {
+                  await showErrorDialog(context, 'Error: ${e.code}!');
                 }
+              } catch (e) {
+                await showErrorDialog(
+                    context, 'An unexpected error occurred: $e');
               }
             },
             child: const Text('Log In'),
@@ -105,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
           const Text('Or continue with Google:'),
           IconButton(
             onPressed: () async {
-              await Gauth().signInWithGoogle();
+              await Gauth().signInWithGoogle(context);
             },
             icon: Image.asset('assets/images/google.png'),
           )

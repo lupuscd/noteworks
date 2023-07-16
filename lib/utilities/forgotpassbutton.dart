@@ -56,7 +56,7 @@ class PasswordResetDialog {
   // It contains a TextField for input and two buttons: one to cancel and close the dialog, and one to submit the form.
   Future<void> showRecoverPasswordDialog(BuildContext context) async {
     // showDialog is a Flutter method that shows a material design modal dialog.
-    return showDialog<void>(
+    return showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
