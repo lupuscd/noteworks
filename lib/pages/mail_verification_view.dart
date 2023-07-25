@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:noteworks/constants/routes.dart';
 
 // VerifyEmailPage is a StatefulWidget to manage email verification functionality
 class VerifyEmailPage extends StatefulWidget {
@@ -19,7 +20,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         title: const Text('Email Verification'),
       ),
       body: Column(children: [
-        const Text('Verify your email'),
+        const Text('Email verification sent'),
+        const Text('Email not received? Press the button below:'),
         TextButton(
           onPressed: () async {
             // Get the current user
@@ -28,8 +30,18 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             // Send an email verification
             await user?.sendEmailVerification();
           },
-          child: const Text('Send email verification'),
+          child: const Text('Send mail verification'),
         ),
+        TextButton(
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              registerRoute,
+              (route) => false,
+            );
+          },
+          child: const Icon(Icons.autorenew_rounded),
+        )
       ]),
     );
   }

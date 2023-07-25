@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
-import 'package:noteworks/utilities/errordialog.dart';
-import 'package:noteworks/utilities/forgotpassbutton.dart';
-import 'package:noteworks/utilities/google_auth.dart';
+import 'package:noteworks/utilities/error_dialog.dart';
+import 'package:noteworks/utilities/forgot_pass_button.dart';
+import 'package:noteworks/services/auth/google_auth.dart';
 
 // LoginPage is a StatefulWidget to manage user login functionality
 class LoginPage extends StatefulWidget {
@@ -70,15 +70,20 @@ class _LoginPageState extends State<LoginPage> {
               final email = _email.text.trim();
               final pass = _pass.text;
               try {
-                final userCredential =
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: email,
-                  password: pass,
-                );
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  notesRoute,
-                  (route) => false,
-                );
+                await FirebaseAuth.instance
+                    .signInWithEmailAndPassword(email: email, password: pass);
+                final user = FirebaseAuth.instance.currentUser;
+                if (user?.emailVerified ?? false) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                    (route) => false,
+                  );
+                } else {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyMailRoute,
+                    (route) => false,
+                  );
+                }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   await showErrorDialog(context, 'User not found!');

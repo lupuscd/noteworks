@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
-import 'package:noteworks/utilities/errordialog.dart';
-import 'package:noteworks/utilities/google_auth.dart';
+import 'package:noteworks/utilities/error_dialog.dart';
+import 'package:noteworks/services/auth/google_auth.dart';
 
 // RegisterPage is a StatefulWidget to manage user registration functionality
 class RegisterPage extends StatefulWidget {
@@ -39,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: Column(
         children: [
@@ -66,11 +66,13 @@ class _RegisterPageState extends State<RegisterPage> {
               final email = _email.text;
               final pass = _pass.text;
               try {
-                final userCredential =
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: pass,
                 );
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                Navigator.of(context).pushNamed(verifyMailRoute);
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
                   await showErrorDialog(context, 'Weak password');
