@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
 import 'package:noteworks/utilities/error_dialog.dart';
 import 'package:noteworks/utilities/forgot_pass_button.dart';
-import 'package:noteworks/services/auth/google_auth.dart';
+import 'package:noteworks/services/auth/google_provider.dart';
 
-// LoginPage is a StatefulWidget to manage user login functionality
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -13,17 +12,13 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-// _LoginPageState manages the state of the LoginPage widget
 class _LoginPageState extends State<LoginPage> {
-  // Declare TextEditingController instances for email and password fields
   late final TextEditingController _email;
   late final TextEditingController _pass;
   late final PasswordResetDialog _passwordResetDialog;
 
-  //Instantiate a PasswordReset object to reset the user's password
   final PasswordReset _passwordReset = PasswordReset();
 
-  // Initialize the TextEditingController instances
   @override
   void initState() {
     _email = TextEditingController();
@@ -32,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  // Dispose of the TextEditingController instances to free resources
   @override
   void dispose() {
     _email.dispose();
@@ -40,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Build the LoginPage widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
