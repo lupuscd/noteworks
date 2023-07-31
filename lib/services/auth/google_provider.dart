@@ -10,8 +10,9 @@ class GoogleAuthProvider implements AuthProvider {
   Future<AuthUser> createUser({
     required String email,
     required String password,
-  }) {
-    throw GenericAuthExc();
+  }) async {
+    return Future.error(UnimplementedError(
+        'GoogleAuthProvider does not support creating a user.'));
   }
 
   @override
@@ -26,8 +27,8 @@ class GoogleAuthProvider implements AuthProvider {
 
   @override
   Future<AuthUser> logIn({
-    required String email,
-    required String password,
+    String? email,
+    String? password,
   }) async {
     try {
       await _googleSignIn.signIn();
@@ -54,6 +55,18 @@ class GoogleAuthProvider implements AuthProvider {
 
   @override
   Future<void> sendEmailVerification() async {
-    throw GenericAuthExc();
+    return Future.error(UnimplementedError(
+        'GoogleAuthProvider does not support sending email verification.'));
+  }
+
+  @override
+  Future<void> initialize() async {
+    return Future.value();
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    return Future.error(UnimplementedError(
+        'GoogleAuthProvider does not support sending password reset emails.'));
   }
 }

@@ -1,39 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-class PasswordReset {
-  final FirebaseAuth _reset = FirebaseAuth.instance;
-
-  Future<void> sendPasswordResetEmail(String email) async {
-    try {
-      await _reset.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      print('Error sending password reset email: $e');
-      // Uncomment the following line if you want to rethrow the error
-      // throw e;
-    }
-  }
-}
+import 'package:noteworks/services/auth/auth_exceptions.dart';
+import 'package:noteworks/services/auth/auth_service.dart';
+import 'package:noteworks/utilities/error_dialog.dart';
 
 class PasswordResetDialog {
   final TextEditingController _email;
-  final PasswordReset _passwordReset;
 
-  PasswordResetDialog(this._email, this._passwordReset);
+  PasswordResetDialog(this._email);
 
   void _forgotPassword(BuildContext context) async {
     final email = _email.text.trim();
 
     try {
-      await _passwordReset.sendPasswordResetEmail(email);
+      await AuthService.firebase().sendPasswordResetEmail(email: email);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Password reset email sent')),
       );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error sending password reset email')),
-      );
+    } on ErrorSendingResetEmail {
+      await showErrorDialog(context, 'Error sending password reset mail.');
     }
   }
 

@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
+import 'package:noteworks/services/auth/auth_exceptions.dart';
+import 'package:noteworks/services/auth/auth_service.dart';
 import 'package:noteworks/utilities/error_dialog.dart';
-import 'package:noteworks/services/auth/google_provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -60,27 +60,32 @@ class _RegisterPageState extends State<RegisterPage> {
               final email = _email.text;
               final pass = _pass.text;
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await AuthService.firebase().createUser(
                   email: email,
                   password: pass,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                await user?.sendEmailVerification();
+                AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(verifyMailRoute);
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'weak-password') {
-                  await showErrorDialog(context, 'Weak password');
-                } else if (e.code == 'email-already-in-use') {
-                  await showErrorDialog(
-                      context, 'Account with this email already exists');
-                } else if (e.code == 'invalid-email') {
-                  await showErrorDialog(context, 'Invalid email entered');
-                } else {
-                  await showErrorDialog(context, 'Error: ${e.code}!');
-                }
-              } catch (e) {
+              } on WeakPassAuthExc {
                 await showErrorDialog(
-                    context, 'An unexpected error occurred: $e');
+                  context,
+                  'Weak password!',
+                );
+              } on EmailUsedAuthExc {
+                await showErrorDialog(
+                  context,
+                  'Account with this email already exists!',
+                );
+              } on InvalidEmailAuthExc {
+                await showErrorDialog(
+                  context,
+                  'Invalid email entered!',
+                );
+              } on GenericAuthExc {
+                await showErrorDialog(
+                  context,
+                  'Failed to register!',
+                );
               }
             },
             child: const Text('Register'),
@@ -97,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
           const Text('Or continue with Google:'),
           IconButton(
             onPressed: () async {
-              await Gauth().signInWithGoogle(context);
+              await AuthService.google().logIn();
             },
             icon: Image.asset('assets/images/google.png'),
           )

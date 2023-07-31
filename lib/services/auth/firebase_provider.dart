@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:noteworks/firebase_options.dart';
 import 'package:noteworks/services/auth/auth_user.dart';
 import 'package:noteworks/services/auth/auth_provider.dart';
 import 'package:noteworks/services/auth/auth_exceptions.dart';
@@ -48,10 +50,13 @@ class FirebaseAuthProvider implements AuthProvider {
 
   @override
   Future<AuthUser> logIn({
-    required String email,
-    required String password,
+    String? email,
+    String? password,
   }) async {
     try {
+      if (password == null || email == null) {
+        throw NullPassword();
+      }
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -92,6 +97,22 @@ class FirebaseAuthProvider implements AuthProvider {
       await user.sendEmailVerification();
     } else {
       throw UserNotLoggedExc();
+    }
+  }
+
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw ErrorSendingResetEmail();
     }
   }
 }

@@ -1,10 +1,15 @@
 import 'package:noteworks/services/auth/auth_provider.dart';
 import 'package:noteworks/services/auth/auth_user.dart';
+import 'package:noteworks/services/auth/firebase_provider.dart';
+import 'package:noteworks/services/auth/google_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
 
-  AuthService(this.provider);
+  const AuthService(this.provider);
+
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
+  factory AuthService.google() => AuthService(GoogleAuthProvider());
 
   @override
   Future<AuthUser> createUser({
@@ -21,8 +26,8 @@ class AuthService implements AuthProvider {
 
   @override
   Future<AuthUser> logIn({
-    required String email,
-    required String password,
+    String? email,
+    String? password,
   }) =>
       provider.logIn(
         email: email,
@@ -34,4 +39,11 @@ class AuthService implements AuthProvider {
 
   @override
   Future<void> sendEmailVerification() => provider.sendEmailVerification();
+
+  @override
+  Future<void> initialize() => provider.initialize();
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) =>
+      provider.sendPasswordResetEmail(email: email);
 }

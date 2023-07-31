@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
+import 'package:noteworks/services/auth/auth_exceptions.dart';
+import 'package:noteworks/services/auth/auth_service.dart';
 import 'package:noteworks/utilities/error_dialog.dart';
 import 'package:noteworks/utilities/forgot_pass_button.dart';
-import 'package:noteworks/services/auth/google_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,13 +17,11 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _pass;
   late final PasswordResetDialog _passwordResetDialog;
 
-  final PasswordReset _passwordReset = PasswordReset();
-
   @override
   void initState() {
     _email = TextEditingController();
     _pass = TextEditingController();
-    _passwordResetDialog = PasswordResetDialog(_email, _passwordReset);
+    _passwordResetDialog = PasswordResetDialog(_email);
     super.initState();
   }
 
@@ -63,10 +61,12 @@ class _LoginPageState extends State<LoginPage> {
               final email = _email.text.trim();
               final pass = _pass.text;
               try {
-                await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(email: email, password: pass);
-                final user = FirebaseAuth.instance.currentUser;
-                if (user?.emailVerified ?? false) {
+                await AuthService.firebase().logIn(
+                  email: email,
+                  password: pass,
+                );
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -77,17 +77,21 @@ class _LoginPageState extends State<LoginPage> {
                     (route) => false,
                   );
                 }
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
-                  await showErrorDialog(context, 'User not found!');
-                } else if (e.code == 'wrong-password') {
-                  await showErrorDialog(context, 'Wrong password!');
-                } else {
-                  await showErrorDialog(context, 'Error: ${e.code}!');
-                }
-              } catch (e) {
+              } on UserNotFoundAuthExc {
                 await showErrorDialog(
-                    context, 'An unexpected error occurred: $e');
+                  context,
+                  'User not found!',
+                );
+              } on WrongPassAuthExc {
+                await showErrorDialog(
+                  context,
+                  'Wrong password!',
+                );
+              } on GenericAuthExc {
+                await showErrorDialog(
+                  context,
+                  'Authentication error!',
+                );
               }
             },
             child: const Text('Log In'),
@@ -109,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
           const Text('Or continue with Google:'),
           IconButton(
             onPressed: () async {
-              await Gauth().signInWithGoogle(context);
+              await AuthService.google().logIn();
             },
             icon: Image.asset('assets/images/google.png'),
           )

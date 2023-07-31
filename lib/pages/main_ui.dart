@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
-
-enum MenuAction { logout }
+import 'package:noteworks/enums/menu_action.dart';
 
 class NoteWorks extends StatefulWidget {
   const NoteWorks({super.key});
