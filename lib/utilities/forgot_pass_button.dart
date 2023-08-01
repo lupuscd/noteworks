@@ -17,8 +17,10 @@ class PasswordResetDialog {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Password reset email sent')),
       );
-    } on ErrorSendingResetEmail {
-      await showErrorDialog(context, 'Error sending password reset mail.');
+      Navigator.of(context).pop();
+    } on ErrorSendingResetEmailExc {
+      Navigator.of(context).pop();
+      await showErrorDialog(context, 'Error sending password reset email!');
     }
   }
 
@@ -50,7 +52,6 @@ class PasswordResetDialog {
             TextButton(
               onPressed: () {
                 _forgotPassword(context);
-                Navigator.of(context).pop();
               },
               child: const Text('Recover'),
             ),

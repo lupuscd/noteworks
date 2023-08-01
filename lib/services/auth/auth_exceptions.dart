@@ -4,7 +4,7 @@ class UserNotFoundAuthExc implements Exception {}
 
 class WrongPassAuthExc implements Exception {}
 
-class NullPassword implements Exception {}
+class NullPasswordExc implements Exception {}
 
 // Register exceptions
 
@@ -16,7 +16,7 @@ class InvalidEmailAuthExc implements Exception {}
 
 // Pass reset exception
 
-class ErrorSendingResetEmail implements Exception {}
+class ErrorSendingResetEmailExc implements Exception {}
 
 // Generic exceptions
 

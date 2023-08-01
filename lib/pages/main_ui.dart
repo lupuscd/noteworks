@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noteworks/constants/routes.dart';
 import 'package:noteworks/enums/menu_action.dart';
+import 'package:noteworks/services/auth/auth_service.dart';
 
 class NoteWorks extends StatefulWidget {
   const NoteWorks({super.key});
@@ -23,7 +23,11 @@ class _NoteWorksState extends State<NoteWorks> {
                 case MenuAction.logout:
                   final shouldLogout = await showLogoutDialog(context);
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
+                    if (AuthService.google().currentUser != null) {
+                      await AuthService.google().logOut();
+                    } else if (AuthService.firebase().currentUser != null) {
+                      await AuthService.firebase().logOut();
+                    }
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
                       (_) => false,

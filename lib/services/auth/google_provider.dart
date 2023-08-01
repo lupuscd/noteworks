@@ -4,7 +4,7 @@ import 'package:noteworks/services/auth/auth_exceptions.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleAuthProvider implements AuthProvider {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Future<AuthUser> createUser({

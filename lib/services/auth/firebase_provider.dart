@@ -55,7 +55,7 @@ class FirebaseAuthProvider implements AuthProvider {
   }) async {
     try {
       if (password == null || email == null) {
-        throw NullPassword();
+        throw NullPasswordExc();
       }
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -112,7 +112,7 @@ class FirebaseAuthProvider implements AuthProvider {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     } catch (e) {
-      throw ErrorSendingResetEmail();
+      throw ErrorSendingResetEmailExc();
     }
   }
 }

@@ -114,6 +114,10 @@ class _LoginPageState extends State<LoginPage> {
           IconButton(
             onPressed: () async {
               await AuthService.google().logIn();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                notesRoute,
+                (route) => false,
+              );
             },
             icon: Image.asset('assets/images/google.png'),
           )
